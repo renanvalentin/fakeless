@@ -1,0 +1,19 @@
+{
+  "TableName": "Hosted-Payment-Web-TemplateParameters",
+  "AttributeDefinitions": [
+    {
+      "AttributeName": "sessionID",
+      "AttributeType": "S"
+    }
+  ],
+  "KeySchema": [
+    {
+      "AttributeName": "sessionID",
+      "KeyType": "HASH"
+    }
+  ],
+  "ProvisionedThroughput": {
+    "ReadCapacityUnits": 5,
+    "WriteCapacityUnits": 5
+  }
+}

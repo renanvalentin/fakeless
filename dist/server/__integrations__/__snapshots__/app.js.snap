@@ -1,0 +1,9 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`loads an external response body 1`] = `"{\\"id\\":\\"cc\\",\\"name\\":\\"Paypal\\",\\"delete\\":\\"/session/cc\\"}"`;
+
+exports[`returns simple response 1`] = `"{\\"id\\":\\"paypal\\",\\"name\\":\\"Paypal\\",\\"delete\\":\\"/session/paypal\\"}"`;
+
+exports[`validates body payload 1`] = `"{\\"detail\\":\\"paypal is not feeling well\\"}"`;
+
+exports[`validates the header 1`] = `"{\\"detail\\":\\"paypal is not feeling well\\"}"`;

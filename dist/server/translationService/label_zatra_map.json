@@ -1,0 +1,19 @@
+{
+  "add_cc_title": "mobile.app.payment.title.add.cc",
+  "name_on_card_label": "mobile.app.payment.cc.nameOnCard",
+  "card_number_label": "mobile.app.payment.cc.cardNumber",
+  "expiry_date_label": "PaymentMethodType.CREDITCARD.validity",
+  "cvv_label": "mobile.app.payment.cvv.label",
+  "name_on_card_invalid_error": "mobile.app.payment.invalid.nameOnCard",
+  "pan_invalid_error": "mobile.app.payment.invalid.pam",
+  "expiry_date_invalid_error": "mobile.app.payment.invalid.exp.date",
+  "expiry_date_invalid_month": "mobile.app.payment.exp.date.month",
+  "expiry_date_past": "mobile.app.payment.exp.date.past",
+  "cvv_error": "mobile.app.payment.cvv.error",
+  "server_error_400": "mobile.app.payment.400.server.error",
+  "server_error_500": "mobile.app.payment.500.sever.error",
+  "cvv_hint": "mobile.app.payment.cvv.hint",
+  "close": "main.close",
+  "card_scan_cancelled": "mobile.app.payment.card.scan.cancelled",
+  "payment_unsupported": "mobile.app.payment.unsupported"
+}

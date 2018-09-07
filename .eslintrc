@@ -1,0 +1,24 @@
+{
+  "extends": ["airbnb", "plugin:flowtype/recommended"],
+  "plugins": ["flowtype"],
+  "parser": "babel-eslint",
+  "root": true,
+  "env": {
+    "node": true,
+    "jest": true
+  },
+  "rules": {
+    "import/prefer-default-export": "off",
+    "import/no-extraneous-dependencies": [
+      "error",
+      { "allow": ["__tests__/**", "__integrations__/**"] }
+    ],
+    "react/no-did-mount-set-state": "off",
+    "import/no-internal-modules": [
+      "error",
+      {
+        "allow": ["uuid/*"]
+      }
+    ]
+  }
+}

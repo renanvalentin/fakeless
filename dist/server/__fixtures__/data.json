@@ -1,0 +1,11 @@
+{
+  "Hosted-Payment-Web-TemplateParameters": {
+    "schema": "/server/__fixtures__/TemplateParametersSchema.json",
+    "seed": [
+      {
+        "sessionID": { "S": "1" },
+        "returnURL": { "S": "//example.com" }
+      }
+    ]
+  }
+}
