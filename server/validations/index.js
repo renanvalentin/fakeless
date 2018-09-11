@@ -1,54 +1,67 @@
 /* @flow */
 
-import _ from 'lodash';
+import _ from "lodash";
 
-import { resolveTemplate, log } from '../utils';
-import type { Setup } from '../types';
+import { resolveTemplate, log } from "../utils";
+import type { Setup } from "../types";
 
-const headersLogger = log('validations:headers');
-const bodyLogger = log('validations:body');
+const headersLogger = log("validations:headers");
+const bodyLogger = log("validations:body");
 
 const validateHeaders = (req, res, next) => (template, validate) => {
-  const isValid = _.every(validate.headers, (value, header) => {
-    if (req.headers[header] && req.headers[header] === value) {
+  const validation = _.find(validate.headers, (value, name) => {
+    if (req.headers[name] && req.headers[name] !== value.toBe) {
       return true;
     }
-
-    headersLogger.debug('invalid: ', header, 'expected ', value, 'to equal', req.headers[header]);
 
     return false;
   });
 
-  if (!isValid) {
-    res.status(template.response.status).send(template.response.error);
-    return next(template.response.error);
+  if (validation) {
+    const header = _.findKey(validate.headers, validation);
+
+    headersLogger.debug(
+      "invalid: ",
+      validation,
+      "expected ",
+      validate.toBe,
+      "to equal",
+      req.headers[header]
+    );
+    res.status(validation.status).send(validation.error);
+    return next(validation.error);
   }
 
   return next();
 };
 
 const validateBody = (req, res, next) => (template, validate) => {
-  const isValid = _.every(validate.body, (value, body) => {
-    if (req.body[body] && req.body[body] === '' && value === 'required') {
+  const validation = _.find(validate.body, (value, body) => {
+    if (req.body[body] === undefined && value.toBe === "required") {
       return true;
     }
-
-    bodyLogger.debug('invalid: ', body, ' to be required');
 
     return false;
   });
 
-  if (!isValid) {
-    res.status(template.response.status).send(template.response.error);
-    return next(template.response.error);
+  if (validation) {
+    const body = _.findKey(validate.body, validation);
+
+    bodyLogger.debug("invalid: ", body, " to be required");
+
+    res.status(validation.status).send(validation.error);
+    return next(validation.error);
   }
 
   return next();
 };
 
 export const create = (setup: Setup) => {
-  const validations = setup.templates.map((template) => {
-    const resolved = resolveTemplate(template, { ...setup.variables, ...template.variables });
+  const validations = setup.templates.map(template => {
+    const resolved = resolveTemplate(template, {
+      ...setup.variables,
+      ...template.variables
+    });
 
     return (req, res, next) => {
       const { validate } = resolved;

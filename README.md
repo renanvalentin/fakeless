@@ -147,16 +147,10 @@ The body response can be defined explicity on your json file or it can be export
       "method": "post",
       "route": "/heroes/<%= hero %>",
       "response": {
-        "body": {},
-        "error": {
-            "message": "Out of webs"
+        "body": {
+          "message": "Out of webs"
         },
         "status": 400
-      },
-      "validate": {
-        "body": {
-          "reload": "required"
-        }
       }
     }
   ]
@@ -187,16 +181,17 @@ Fakeless will check if headers' values matches with those one specified on the c
       "route": "/heroes/<%= hero %>",
       "response": {
         "body": {},
-        "error": {
-            "message": "Out of webs"
-        },
-        "status": 400
+        "status": 200
       },
       "validate": {
         "headers": {
-          "authorization": "Bearer 123",
-          "content-type": "application/json",
-          "accept-language": "EN"
+          "content-type": {
+            "toBe": "application/json",
+            "error": {
+              "message": "Out of webs"
+            },
+            "status": 400
+          }
         }
       }
     }
@@ -231,7 +226,13 @@ It is also possible to set which field is `required`:
       },
       "validate": {
         "body": {
-          "reload": "required"
+          "reload": {
+            "toBe": "required",
+            "error": {
+              "message": "Out of webs"
+            },
+            "status": 400
+          }
         }
       }
     }
