@@ -13,7 +13,6 @@
       "error",
       { "allow": ["__tests__/**", "__integrations__/**"] }
     ],
-    "react/no-did-mount-set-state": "off",
     "import/no-internal-modules": [
       "error",
       {

@@ -3,7 +3,7 @@
 import compression from 'compression';
 import express from 'express';
 import type { $Application } from 'express';
-import helmet from 'helmet';
+import cors from 'cors';
 import bodyParser from 'body-parser';
 
 import config from './config';
@@ -23,7 +23,10 @@ export const createApp = async (setup: Setup) => {
 
   app.use(loggingMiddleware(config.loglevel));
   app.use(compression());
-  app.use(helmet());
+
+  app.options('*', cors());
+  app.use(cors());
+
   app.use(bodyParser.json());
 
   createValidations(setup).forEach(validation => app.use(validation));

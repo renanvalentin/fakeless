@@ -1,12 +1,12 @@
 /* @flow */
 
-import _ from "lodash";
+import _ from 'lodash';
 
-import { resolveTemplate, log } from "../utils";
-import type { Setup } from "../types";
+import { resolveTemplate, log } from '../utils';
+import type { Setup } from '../types';
 
-const headersLogger = log("validations:headers");
-const bodyLogger = log("validations:body");
+const headersLogger = log('validations:headers');
+const bodyLogger = log('validations:body');
 
 const validateHeaders = (req, res, next) => (template, validate) => {
   const validation = _.find(validate.headers, (value, name) => {
@@ -21,12 +21,12 @@ const validateHeaders = (req, res, next) => (template, validate) => {
     const header = _.findKey(validate.headers, validation);
 
     headersLogger.debug(
-      "invalid: ",
+      'invalid: ',
       validation,
-      "expected ",
+      'expected ',
       validate.toBe,
-      "to equal",
-      req.headers[header]
+      'to equal',
+      req.headers[header],
     );
     res.status(validation.status).send(validation.error);
     return next(validation.error);
@@ -37,7 +37,7 @@ const validateHeaders = (req, res, next) => (template, validate) => {
 
 const validateBody = (req, res, next) => (template, validate) => {
   const validation = _.find(validate.body, (value, body) => {
-    if (req.body[body] === undefined && value.toBe === "required") {
+    if (req.body[body] === undefined && value.toBe === 'required') {
       return true;
     }
 
@@ -47,7 +47,7 @@ const validateBody = (req, res, next) => (template, validate) => {
   if (validation) {
     const body = _.findKey(validate.body, validation);
 
-    bodyLogger.debug("invalid: ", body, " to be required");
+    bodyLogger.debug('invalid: ', body, ' to be required');
 
     res.status(validation.status).send(validation.error);
     return next(validation.error);
@@ -57,10 +57,10 @@ const validateBody = (req, res, next) => (template, validate) => {
 };
 
 export const create = (setup: Setup) => {
-  const validations = setup.templates.map(template => {
+  const validations = setup.templates.map((template) => {
     const resolved = resolveTemplate(template, {
       ...setup.variables,
-      ...template.variables
+      ...template.variables,
     });
 
     return (req, res, next) => {
