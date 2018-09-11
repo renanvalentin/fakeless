@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 Object.defineProperty(exports, "__esModule", {
   value: true
@@ -7,16 +7,16 @@ exports.create = undefined;
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-var _lodash = require("lodash");
+var _lodash = require('lodash');
 
 var _lodash2 = _interopRequireDefault(_lodash);
 
-var _utils = require("../utils");
+var _utils = require('../utils');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-const headersLogger = (0, _utils.log)("validations:headers");
-const bodyLogger = (0, _utils.log)("validations:body");
+const headersLogger = (0, _utils.log)('validations:headers');
+const bodyLogger = (0, _utils.log)('validations:body');
 
 const validateHeaders = (req, res, next) => (template, validate) => {
   const validation = _lodash2.default.find(validate.headers, (value, name) => {
@@ -30,7 +30,7 @@ const validateHeaders = (req, res, next) => (template, validate) => {
   if (validation) {
     const header = _lodash2.default.findKey(validate.headers, validation);
 
-    headersLogger.debug("invalid: ", validation, "expected ", validate.toBe, "to equal", req.headers[header]);
+    headersLogger.debug('invalid: ', validation, 'expected ', validate.toBe, 'to equal', req.headers[header]);
     res.status(validation.status).send(validation.error);
     return next(validation.error);
   }
@@ -40,7 +40,7 @@ const validateHeaders = (req, res, next) => (template, validate) => {
 
 const validateBody = (req, res, next) => (template, validate) => {
   const validation = _lodash2.default.find(validate.body, (value, body) => {
-    if (req.body[body] === undefined && value.toBe === "required") {
+    if (req.body[body] === undefined && value.toBe === 'required') {
       return true;
     }
 
@@ -50,7 +50,7 @@ const validateBody = (req, res, next) => (template, validate) => {
   if (validation) {
     const body = _lodash2.default.findKey(validate.body, validation);
 
-    bodyLogger.debug("invalid: ", body, " to be required");
+    bodyLogger.debug('invalid: ', body, ' to be required');
 
     res.status(validation.status).send(validation.error);
     return next(validation.error);

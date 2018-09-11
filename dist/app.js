@@ -1,43 +1,43 @@
-"use strict";
+'use strict';
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.startApp = exports.createApp = undefined;
 
-var _compression = require("compression");
+var _compression = require('compression');
 
 var _compression2 = _interopRequireDefault(_compression);
 
-var _express = require("express");
+var _express = require('express');
 
 var _express2 = _interopRequireDefault(_express);
 
-var _cors = require("cors");
+var _cors = require('cors');
 
 var _cors2 = _interopRequireDefault(_cors);
 
-var _bodyParser = require("body-parser");
+var _bodyParser = require('body-parser');
 
 var _bodyParser2 = _interopRequireDefault(_bodyParser);
 
-var _config = require("./config");
+var _config = require('./config');
 
 var _config2 = _interopRequireDefault(_config);
 
-var _routes = require("./routes");
+var _routes = require('./routes');
 
-var _validations = require("./validations");
+var _validations = require('./validations');
 
-var _simulations = require("./simulations");
+var _simulations = require('./simulations');
 
-var _utils = require("./utils");
+var _utils = require('./utils');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
 
-const { info } = (0, _utils.log)("app");
+const { info } = (0, _utils.log)('app');
 
 const createApp = exports.createApp = (() => {
   var _ref = _asyncToGenerator(function* (setup) {
@@ -48,6 +48,7 @@ const createApp = exports.createApp = (() => {
     app.use((0, _utils.loggingMiddleware)(_config2.default.loglevel));
     app.use((0, _compression2.default)());
 
+    app.options('*', (0, _cors2.default)());
     app.use((0, _cors2.default)());
 
     app.use(_bodyParser2.default.json());
