@@ -195,3 +195,54 @@ it('validates body payload', async () => {
     })
     .expect(400);
 });
+
+it('filter router by query string', async () => {
+  const setup = {
+    variables: {
+      host: 'http://localhost:3000',
+      rootDir: '../../',
+    },
+    templates: [
+      {
+        variables: {
+          hero: 'spider',
+        },
+        method: 'get',
+        route: '/heroes/<%= hero %>',
+        query: {
+          power: 'true',
+        },
+        response: {
+          body: {
+            name: '<%= hero %>',
+            power: 'spider sense',
+          },
+          status: 200,
+        },
+      },
+      {
+        variables: {
+          hero: 'spider',
+        },
+        method: 'get',
+        route: '/heroes/<%= hero %>',
+        response: {
+          body: {
+            name: '<%= hero %>',
+            photos: '<%= host %>/<%= hero %>/photos',
+          },
+          status: 200,
+        },
+      },
+    ],
+  };
+
+  const app = await createApp(setup);
+
+  return supertest(app)
+    .get('/heroes/spider?power=true')
+    .expect((res) => {
+      expect(res.text).toMatchSnapshot();
+    })
+    .expect(200);
+});
