@@ -18,6 +18,8 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 const headersLogger = (0, _utils.log)('validations:headers');
 const bodyLogger = (0, _utils.log)('validations:body');
 
+const checkRoute = name => new RegExp(`^${name}/?$`, 'i');
+
 const validateHeaders = (req, res, next) => (template, validate) => {
   const validation = _lodash2.default.find(validate.headers, (value, name) => {
     if (req.headers[name] && req.headers[name] !== value.toBe) {
@@ -30,7 +32,8 @@ const validateHeaders = (req, res, next) => (template, validate) => {
   if (validation) {
     const header = _lodash2.default.findKey(validate.headers, validation);
 
-    headersLogger.debug('invalid: ', validation, 'expected ', validate.toBe, 'to equal', req.headers[header]);
+    headersLogger.debug('invalid: ', req.method, validation, 'expected ', validate.toBe, 'to equal', req.headers[header]);
+
     res.status(validation.status).send(validation.error);
     return next(validation.error);
   }
@@ -70,7 +73,7 @@ const create = exports.create = setup => {
         return next();
       }
 
-      if (req.url.match(resolved.route)) {
+      if (req.url.match(checkRoute(resolved.route))) {
         if (validate.headers !== undefined) {
           return validateHeaders(req, res, next)(resolved, validate);
         }

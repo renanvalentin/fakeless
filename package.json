@@ -1,6 +1,6 @@
 {
   "name": "fakeless",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "data-driven http rest server",
   "main": "dist/index.js",
   "bin": "dist/index.js",
