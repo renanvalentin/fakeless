@@ -8,6 +8,8 @@ import type { Setup } from '../types';
 const headersLogger = log('validations:headers');
 const bodyLogger = log('validations:body');
 
+const checkRoute = name => new RegExp(`^${name}/?$`, 'i');
+
 const validateHeaders = (req, res, next) => (template, validate) => {
   const validation = _.find(validate.headers, (value, name) => {
     if (req.headers[name] && req.headers[name] !== value.toBe) {
@@ -22,12 +24,14 @@ const validateHeaders = (req, res, next) => (template, validate) => {
 
     headersLogger.debug(
       'invalid: ',
+      req.method,
       validation,
       'expected ',
       validate.toBe,
       'to equal',
       req.headers[header],
     );
+
     res.status(validation.status).send(validation.error);
     return next(validation.error);
   }
@@ -70,7 +74,7 @@ export const create = (setup: Setup) => {
         return next();
       }
 
-      if (req.url.match(resolved.route)) {
+      if (req.url.match(checkRoute(resolved.route))) {
         if (validate.headers !== undefined) {
           return validateHeaders(req, res, next)(resolved, validate);
         }
