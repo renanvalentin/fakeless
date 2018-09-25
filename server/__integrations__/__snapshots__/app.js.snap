@@ -4,6 +4,12 @@ exports[`filter router by query string 1`] = `"{\\"name\\":\\"spider\\",\\"power
 
 exports[`loads an external response body 1`] = `"{\\"id\\":\\"spider\\",\\"name\\":\\"spider\\"}"`;
 
+exports[`loads external templates for different keys 1`] = `"{\\"id\\":\\"spider\\",\\"name\\":\\"spider\\"}"`;
+
+exports[`loads external templates for different keys 2`] = `"{\\"detail\\":\\"spider is not feeling well\\"}"`;
+
+exports[`loads external templates for different keys 3`] = `"{\\"detail\\":\\"spider is not feeling well\\"}"`;
+
 exports[`returns simple response 1`] = `"{\\"name\\":\\"spider\\",\\"photos\\":\\"http://localhost:3000/spider/photos\\"}"`;
 
 exports[`validates body payload 1`] = `"{\\"detail\\":\\"spider is not feeling well\\"}"`;

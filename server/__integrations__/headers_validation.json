@@ -1,0 +1,9 @@
+{
+  "content-type": {
+    "toBe": "application/json",
+    "error": {
+      "detail": "<%= hero %> is not feeling well"
+    },
+    "status": 400
+  }
+}

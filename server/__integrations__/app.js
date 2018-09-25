@@ -251,3 +251,56 @@ it('filter router by query string', async () => {
     })
     .expect(200);
 });
+
+it('loads external templates for different keys', async () => {
+  const setup = {
+    variables: {
+      host: 'http://localhost:3000',
+      rootDir: './',
+    },
+    templates: [
+      {
+        variables: {
+          hero: 'spider',
+        },
+        method: 'get',
+        route: '/heroes/<%= hero %>',
+        response: {
+          body: '<%= rootDir %>server/__integrations__/fixture.json',
+          status: 200,
+        },
+        validate: {
+          body: '<%= rootDir %>server/__integrations__/body_validation.json',
+          headers: '<%= rootDir %>server/__integrations__/headers_validation.json',
+        },
+      },
+    ],
+  };
+
+  const app = await createApp(setup);
+
+  await supertest(app)
+    .get('/heroes/spider')
+    .expect((res) => {
+      expect(res.text).toMatchSnapshot();
+    })
+    .expect(200);
+
+  await supertest(app)
+    .get('/heroes/spider')
+    .set('content-type', 'application/bla')
+    .expect((res) => {
+      expect(res.text).toMatchSnapshot();
+    })
+    .expect(400);
+
+  await supertest(app)
+    .post('/heroes/spider')
+    .send('bla=name is missing')
+    .set('Accept', 'application/json')
+
+    .expect((res) => {
+      expect(res.text).toMatchSnapshot();
+    })
+    .expect(400);
+});

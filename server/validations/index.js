@@ -2,7 +2,7 @@
 
 import _ from 'lodash';
 
-import { resolveTemplate, log } from '../utils';
+import { log } from '../utils';
 import type { Setup } from '../types';
 
 const headersLogger = log('validations:headers');
@@ -61,31 +61,24 @@ const validateBody = (req, res, next) => (template, validate) => {
 };
 
 export const create = (setup: Setup) => {
-  const validations = setup.templates.map((template) => {
-    const resolved = resolveTemplate(template, {
-      ...setup.variables,
-      ...template.variables,
-    });
+  const validations = setup.templates.map(template => (req, res, next) => {
+    const { validate } = template;
 
-    return (req, res, next) => {
-      const { validate } = resolved;
-
-      if (validate === undefined) {
-        return next();
-      }
-
-      if (req.url.match(checkRoute(resolved.route))) {
-        if (validate.headers !== undefined) {
-          return validateHeaders(req, res, next)(resolved, validate);
-        }
-
-        if (validate.body !== undefined) {
-          return validateBody(req, res, next)(resolved, validate);
-        }
-      }
-
+    if (validate === undefined) {
       return next();
-    };
+    }
+
+    if (req.url.match(checkRoute(template.route))) {
+      if (validate.headers !== undefined) {
+        return validateHeaders(req, res, next)(template, validate);
+      }
+
+      if (validate.body !== undefined) {
+        return validateBody(req, res, next)(template, validate);
+      }
+    }
+
+    return next();
   });
 
   return validations;

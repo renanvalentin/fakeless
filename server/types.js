@@ -10,9 +10,9 @@ export type Template = {
   variables: Variables,
   method: 'get' | 'post' | 'put',
   route: string,
+  query?: Dictionary,
   response: {
-    body: Dictionary | string,
-    error?: Dictionary,
+    body: Dictionary,
     status: number,
   },
   validate?: {

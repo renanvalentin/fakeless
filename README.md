@@ -118,7 +118,11 @@ The body response can be defined explicity on your json file or it can be export
       "response": {
         "body": "<%= rootDir %>/hero.json",
         "status": 200
-      }
+      },
+      "validate": {
+          "body": '<%= rootDir %>/body_validation.json',
+          "headers": '<%= rootDir %>/headers_validation.json',
+      },
     }
   ]
 }

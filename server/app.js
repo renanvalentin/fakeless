@@ -7,6 +7,7 @@ import cors from 'cors';
 import bodyParser from 'body-parser';
 
 import config from './config';
+import { resolve } from './templates';
 import { create as createRoutes } from './routes';
 import { create as createValidations } from './validations';
 import { create as createSimulations } from './simulations';
@@ -29,10 +30,12 @@ export const createApp = async (setup: Setup) => {
 
   app.use(bodyParser.json());
 
-  createValidations(setup).forEach(validation => app.use(validation));
-  createSimulations(setup).forEach(validation => app.use(validation));
+  const resolvedSetup = await resolve(setup);
 
-  const routes = await createRoutes(setup);
+  createValidations(resolvedSetup).forEach(validation => app.use(validation));
+  createSimulations(resolvedSetup).forEach(validation => app.use(validation));
+
+  const routes = await createRoutes(resolvedSetup);
 
   app.use(routes);
 

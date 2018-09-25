@@ -1,78 +1,35 @@
 /* @flow */
 
-import { readFile } from 'fs';
-import { promisify } from 'util';
-import { join as joinPath } from 'path';
 import _ from 'lodash';
 
 import { Router } from 'express';
 
-import { resolveTemplate, log } from '../utils';
-import type { Setup, Template, Variables } from '../types';
+import { log } from '../utils';
+import type { Setup, Template } from '../types';
 
 const logger = log('routes');
 
-const readFileAsync = promisify(readFile);
-
-type LoadResponseDef = (path: string) => Promise<{}>;
-
-const loadReponse: LoadResponseDef = path =>
-  readFileAsync(joinPath(process.cwd(), path), 'utf-8').then(str => JSON.parse(str));
-
-type ParseTemplateDef = (template: Template, variables: Variables) => Promise<Template>;
-
-const parseTemplate: ParseTemplateDef = (template, variables) =>
-  new Promise(async (res) => {
-    const resolved = resolveTemplate(template, {
-      ...variables,
-      ...template.variables,
-    });
-
-    if (typeof template.response.body === 'string') {
-      const body = await loadReponse(resolved.response.body);
-
-      return res({
-        ...template,
-        response: {
-          ...template.response,
-          body,
-        },
-      });
-    }
-
-    return res(template);
-  });
-
 type MakeRouteDef = (
   template: Template,
-  variables: Variables,
-) => Promise<{
+) => {
   type: string,
   path: string,
   status: number,
   query: {},
   response: { [key: string]: string },
-}>;
+};
 
-const makeRoute: MakeRouteDef = (template, variables) =>
-  new Promise(async (res) => {
-    const parsedTemplate = await parseTemplate(template, variables);
+const makeRoute: MakeRouteDef = (template) => {
+  const routeType = template.method.toLowerCase();
 
-    const resolved = resolveTemplate(parsedTemplate, {
-      ...variables,
-      ...template.variables,
-    });
-
-    const routeType = resolved.method.toLowerCase();
-
-    return res({
-      type: routeType,
-      path: resolved.route,
-      status: resolved.response.status,
-      query: resolved.query || {},
-      response: resolved.response.body,
-    });
-  });
+  return {
+    type: routeType,
+    path: template.route,
+    status: template.response.status,
+    query: template.query || {},
+    response: template.response.body,
+  };
+};
 
 const findRouteForRequest = (routes, req) =>
   routes.find(route => _.isEqual(req.query, route.query));
@@ -99,9 +56,7 @@ const arrangeRoutes = (routes, iteratee) =>
 export const create = async (setup: Setup) => {
   const router = new Router();
 
-  const queue = setup.templates.map(template => makeRoute(template, setup.variables));
-
-  const routes = await Promise.all(queue);
+  const routes = setup.templates.map(template => makeRoute(template));
 
   const routeMaker = defineRoute(router);
 
