@@ -4,15 +4,6 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _template = require('./template');
-
-Object.defineProperty(exports, 'resolveTemplate', {
-  enumerable: true,
-  get: function () {
-    return _template.resolveTemplate;
-  }
-});
-
 var _logging = require('./logging');
 
 Object.defineProperty(exports, 'log', {

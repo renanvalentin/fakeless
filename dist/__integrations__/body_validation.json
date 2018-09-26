@@ -1,0 +1,9 @@
+{
+  "name": {
+    "toBe": "required",
+    "error": {
+      "detail": "<%= hero %> is not feeling well"
+    },
+    "status": 400
+  }
+}

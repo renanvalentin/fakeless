@@ -5,14 +5,6 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.create = undefined;
 
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
-var _fs = require('fs');
-
-var _util = require('util');
-
-var _path = require('path');
-
 var _lodash = require('lodash');
 
 var _lodash2 = _interopRequireDefault(_lodash);
@@ -27,53 +19,18 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
 
 const logger = (0, _utils.log)('routes');
 
-const readFileAsync = (0, _util.promisify)(_fs.readFile);
+const makeRoute = template => {
+  const routeType = template.method.toLowerCase();
 
-const loadReponse = path => readFileAsync((0, _path.join)(process.cwd(), path), 'utf-8').then(str => JSON.parse(str));
-
-const parseTemplate = (template, variables) => new Promise((() => {
-  var _ref = _asyncToGenerator(function* (res) {
-    const resolved = (0, _utils.resolveTemplate)(template, _extends({}, variables, template.variables));
-
-    if (typeof template.response.body === 'string') {
-      const body = yield loadReponse(resolved.response.body);
-
-      return res(_extends({}, template, {
-        response: _extends({}, template.response, {
-          body
-        })
-      }));
-    }
-
-    return res(template);
-  });
-
-  return function (_x) {
-    return _ref.apply(this, arguments);
+  return {
+    type: routeType,
+    path: template.route,
+    status: template.response.status,
+    query: template.query || {},
+    response: template.response.body,
+    headers: template.response.headers || {}
   };
-})());
-
-const makeRoute = (template, variables) => new Promise((() => {
-  var _ref2 = _asyncToGenerator(function* (res) {
-    const parsedTemplate = yield parseTemplate(template, variables);
-
-    const resolved = (0, _utils.resolveTemplate)(parsedTemplate, _extends({}, variables, template.variables));
-
-    const routeType = resolved.method.toLowerCase();
-
-    return res({
-      type: routeType,
-      path: resolved.route,
-      status: resolved.response.status,
-      query: resolved.query || {},
-      response: resolved.response.body
-    });
-  });
-
-  return function (_x2) {
-    return _ref2.apply(this, arguments);
-  };
-})());
+};
 
 const findRouteForRequest = (routes, req) => routes.find(route => _lodash2.default.isEqual(req.query, route.query));
 
@@ -81,6 +38,10 @@ const defineRoute = router => ({ type, name, routes }) =>
 // $FlowFixMe
 router[type](name, (req, res) => {
   const matchedRoute = findRouteForRequest(routes, req);
+
+  Object.entries(matchedRoute.headers).forEach(([key, value]) => {
+    res.set(key, value);
+  });
 
   res.status(matchedRoute.status).send(matchedRoute.response);
 });
@@ -96,14 +57,12 @@ const arrangeRoutes = (routes, iteratee) => _lodash2.default.forEach(_lodash2.de
 });
 
 const create = exports.create = (() => {
-  var _ref3 = _asyncToGenerator(function* (setup) {
+  var _ref = _asyncToGenerator(function* (setup) {
     const router = new _express.Router();
 
-    const queue = setup.templates.map(function (template) {
-      return makeRoute(template, setup.variables);
+    const routes = setup.templates.map(function (template) {
+      return makeRoute(template);
     });
-
-    const routes = yield Promise.all(queue);
 
     const routeMaker = defineRoute(router);
 
@@ -121,8 +80,8 @@ const create = exports.create = (() => {
     return router;
   });
 
-  return function create(_x3) {
-    return _ref3.apply(this, arguments);
+  return function create(_x) {
+    return _ref.apply(this, arguments);
   };
 })();
 //# sourceMappingURL=index.js.map

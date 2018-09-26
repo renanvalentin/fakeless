@@ -5,8 +5,6 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.create = undefined;
 
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
 var _lodash = require('lodash');
 
 var _lodash2 = _interopRequireDefault(_lodash);
@@ -22,7 +20,7 @@ const checkRoute = name => new RegExp(`^${name}/?$`, 'i');
 
 const validateHeaders = (req, res, next) => (template, validate) => {
   const validation = _lodash2.default.find(validate.headers, (value, name) => {
-    if (req.headers[name] && req.headers[name] !== value.toBe) {
+    if (req.headers[name] == null || req.headers[name] && req.headers[name] !== value.toBe) {
       return true;
     }
 
@@ -63,28 +61,24 @@ const validateBody = (req, res, next) => (template, validate) => {
 };
 
 const create = exports.create = setup => {
-  const validations = setup.templates.map(template => {
-    const resolved = (0, _utils.resolveTemplate)(template, _extends({}, setup.variables, template.variables));
+  const validations = setup.templates.map(template => (req, res, next) => {
+    const { validate } = template;
 
-    return (req, res, next) => {
-      const { validate } = resolved;
-
-      if (validate === undefined) {
-        return next();
-      }
-
-      if (req.url.match(checkRoute(resolved.route))) {
-        if (validate.headers !== undefined) {
-          return validateHeaders(req, res, next)(resolved, validate);
-        }
-
-        if (validate.body !== undefined) {
-          return validateBody(req, res, next)(resolved, validate);
-        }
-      }
-
+    if (validate === undefined) {
       return next();
-    };
+    }
+
+    if (req.url.match(checkRoute(template.route))) {
+      if (validate.headers !== undefined) {
+        return validateHeaders(req, res, next)(template, validate);
+      }
+
+      if (validate.body !== undefined) {
+        return validateBody(req, res, next)(template, validate);
+      }
+    }
+
+    return next();
   });
 
   return validations;

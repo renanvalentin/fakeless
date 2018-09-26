@@ -27,6 +27,9 @@ it('returns simple response', _asyncToGenerator(function* () {
           name: '<%= hero %>',
           photos: '<%= host %>/<%= hero %>/photos'
         },
+        headers: {
+          'x-force': '<%= hero %>'
+        },
         status: 200
       }
     }]
@@ -35,6 +38,7 @@ it('returns simple response', _asyncToGenerator(function* () {
   const app = yield (0, _app.createApp)(setup);
 
   return (0, _supertest2.default)(app).get('/heroes/spider').expect(function (res) {
+    expect(res.headers['x-force']).toEqual('spider');
     expect(res.text).toMatchSnapshot();
   }).expect(200);
 }));
@@ -227,5 +231,43 @@ it('filter router by query string', _asyncToGenerator(function* () {
   return (0, _supertest2.default)(app).get('/heroes/spider?power=true').expect(function (res) {
     expect(res.text).toMatchSnapshot();
   }).expect(200);
+}));
+
+it('loads external templates for different keys', _asyncToGenerator(function* () {
+  const setup = {
+    variables: {
+      host: 'http://localhost:3000',
+      rootDir: './'
+    },
+    templates: [{
+      variables: {
+        hero: 'spider'
+      },
+      method: 'get',
+      route: '/heroes/<%= hero %>',
+      response: {
+        body: '<%= rootDir %>server/__integrations__/fixture.json',
+        status: 200
+      },
+      validate: {
+        body: '<%= rootDir %>server/__integrations__/body_validation.json',
+        headers: '<%= rootDir %>server/__integrations__/headers_validation.json'
+      }
+    }]
+  };
+
+  const app = yield (0, _app.createApp)(setup);
+
+  yield (0, _supertest2.default)(app).get('/heroes/spider').set('content-type', 'application/json').expect(function (res) {
+    expect(res.text).toMatchSnapshot();
+  }).expect(200);
+
+  yield (0, _supertest2.default)(app).get('/heroes/spider').set('content-type', 'application/bla').expect(function (res) {
+    expect(res.text).toMatchSnapshot();
+  }).expect(400);
+
+  yield (0, _supertest2.default)(app).post('/heroes/spider').send('bla=name is missing').set('Accept', 'application/json').expect(function (res) {
+    expect(res.text).toMatchSnapshot();
+  }).expect(400);
 }));
 //# sourceMappingURL=app.js.map

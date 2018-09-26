@@ -25,6 +25,8 @@ var _config = require('./config');
 
 var _config2 = _interopRequireDefault(_config);
 
+var _templates = require('./templates');
+
 var _routes = require('./routes');
 
 var _validations = require('./validations');
@@ -53,14 +55,16 @@ const createApp = exports.createApp = (() => {
 
     app.use(_bodyParser2.default.json());
 
-    (0, _validations.create)(setup).forEach(function (validation) {
+    const resolvedSetup = yield (0, _templates.resolve)(setup);
+
+    (0, _validations.create)(resolvedSetup).forEach(function (validation) {
       return app.use(validation);
     });
-    (0, _simulations.create)(setup).forEach(function (validation) {
+    (0, _simulations.create)(resolvedSetup).forEach(function (validation) {
       return app.use(validation);
     });
 
-    const routes = yield (0, _routes.create)(setup);
+    const routes = yield (0, _routes.create)(resolvedSetup);
 
     app.use(routes);
 
