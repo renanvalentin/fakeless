@@ -17,6 +17,7 @@ type MakeRouteDef = (
   status: number,
   query: {},
   response: { [key: string]: string },
+  headers: { [key: string]: string },
 };
 
 const makeRoute: MakeRouteDef = (template) => {
@@ -28,6 +29,7 @@ const makeRoute: MakeRouteDef = (template) => {
     status: template.response.status,
     query: template.query || {},
     response: template.response.body,
+    headers: template.response.headers || {},
   };
 };
 
@@ -38,6 +40,10 @@ const defineRoute = router => ({ type, name, routes }) =>
   // $FlowFixMe
   router[type](name, (req, res) => {
     const matchedRoute = findRouteForRequest(routes, req);
+
+    Object.entries(matchedRoute.headers).forEach(([key, value]) => {
+      res.set(key, value);
+    });
 
     res.status(matchedRoute.status).send(matchedRoute.response);
   });

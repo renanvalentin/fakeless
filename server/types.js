@@ -13,6 +13,7 @@ export type Template = {
   query?: Dictionary,
   response: {
     body: Dictionary,
+    headers: Dictionary,
     status: number,
   },
   validate?: {

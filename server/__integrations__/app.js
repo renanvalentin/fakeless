@@ -22,6 +22,9 @@ it('returns simple response', async () => {
             name: '<%= hero %>',
             photos: '<%= host %>/<%= hero %>/photos',
           },
+          headers: {
+            'x-force': '<%= hero %>',
+          },
           status: 200,
         },
       },
@@ -33,6 +36,7 @@ it('returns simple response', async () => {
   return supertest(app)
     .get('/heroes/spider')
     .expect((res) => {
+      expect(res.headers['x-force']).toEqual('spider');
       expect(res.text).toMatchSnapshot();
     })
     .expect(200);
