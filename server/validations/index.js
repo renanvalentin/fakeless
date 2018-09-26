@@ -12,7 +12,7 @@ const checkRoute = name => new RegExp(`^${name}/?$`, 'i');
 
 const validateHeaders = (req, res, next) => (template, validate) => {
   const validation = _.find(validate.headers, (value, name) => {
-    if (req.headers[name] && req.headers[name] !== value.toBe) {
+    if (req.headers[name] == null || (req.headers[name] && req.headers[name] !== value.toBe)) {
       return true;
     }
 

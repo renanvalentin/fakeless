@@ -281,6 +281,7 @@ it('loads external templates for different keys', async () => {
 
   await supertest(app)
     .get('/heroes/spider')
+    .set('content-type', 'application/json')
     .expect((res) => {
       expect(res.text).toMatchSnapshot();
     })
